@@ -1,0 +1,5 @@
+restclient:
+  #  url: ${MIDDLE_SERVICE_URL}
+  url: http://158.160.88.59:8082
+server:
+  port: 8081

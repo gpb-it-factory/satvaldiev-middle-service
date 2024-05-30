@@ -37,4 +37,20 @@ Frontend --> Client: HTTP
 ![Image](image.png)
 
 ### Локальный запуск
-Раздел в разработке
+1. Склонировать проект:
+   ```
+   git clone https://github.com/gpb-it-factory/satvaldiev-middle-service.git
+   ```
+2. Перейти в корневую папку проекта ___satvaldiev-telegram-bot___
+3. Выполнить команду:
+   ```
+   ./gradlew bootRun
+   ```
+4. Запустить первый компонент проекта "Мини-банк" согласно README:
+   ```
+   https://github.com/gpb-it-factory/satvaldiev-telegram-bot.git
+   ```
+5. Backend компонент проекта развернут на удаленном сервере
+
+### Поддерживаемые команды сервиса
+- ___/register___ (ответ - "Поздравляем! Вы стали клиентом нашего банка")
