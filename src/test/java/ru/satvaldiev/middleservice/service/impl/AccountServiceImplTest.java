@@ -12,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import ru.satvaldiev.middleservice.client.BackendClient;
 import ru.satvaldiev.middleservice.dto.AccountDTO;
 import ru.satvaldiev.middleservice.entity.TelegramUser;
-import ru.satvaldiev.middleservice.response.Error;
 import ru.satvaldiev.middleservice.response.Response;
-import ru.satvaldiev.middleservice.service.AccountService;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
