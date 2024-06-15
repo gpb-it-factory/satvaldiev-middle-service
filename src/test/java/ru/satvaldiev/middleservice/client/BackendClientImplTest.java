@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
+import ru.satvaldiev.middleservice.client.impl.BackendClientImpl;
 import ru.satvaldiev.middleservice.dto.AccountDTO;
 import ru.satvaldiev.middleservice.entity.TelegramUser;
 import ru.satvaldiev.middleservice.response.Error;
@@ -24,12 +25,12 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 
-@RestClientTest(BackendClient.class)
-class BackendClientTest {
+@RestClientTest(BackendClientImpl.class)
+class BackendClientImplTest {
     @Autowired
     MockRestServiceServer server;
     @Autowired
-    BackendClient backendClient;
+    BackendClientImpl backendClient;
     @Autowired
     ObjectMapper objectMapper;
     @Value("${restclient.url}")
