@@ -27,6 +27,9 @@ public class TelegramUserServiceImpl implements TelegramUserService {
         if (responseEntity.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT)) {
             return new Response("Поздравляем! Вы стали клиентом нашего банка");
         }
+        if (responseEntity.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
+            return new Response("Вы уже являетесь клиентом нашего банка");
+        }
         Error error = (Error) responseEntity.getBody();
         if (error == null || error.getMessage() == null) {
             return new Response("Произошла непредвиденная ошибка");

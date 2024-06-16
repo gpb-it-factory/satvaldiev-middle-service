@@ -25,6 +25,9 @@ public class AccountServiceImpl implements AccountService {
                     "Информируем Вас, что при смене Вами своего имени пользователя в Telegram, вы незамедлительно " +
                     "должны оповестить нас при помощи команды /updateusername");
         }
+        if (responseEntity.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
+            return new Response("У Вас уже есть счет в нашем банке");
+        }
         Error error = (Error) responseEntity.getBody();
         if (error == null || error.getMessage() == null) {
             return new Response("Произошла непредвиденная ошибка");

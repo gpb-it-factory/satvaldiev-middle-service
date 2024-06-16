@@ -44,6 +44,15 @@ class AccountServiceImplTest {
                 "должны оповестить нас при помощи команды /updateusername", response.getMessage());
     }
     @Test
+    void responseTextWhenAccountIsAlreadyExist() {
+        when(backendClient.createAccount(account, telegramUser.userId()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
+
+        Response response = accountService.createAccount(account, telegramUser.userId());
+
+        Assertions.assertEquals("У Вас уже есть счет в нашем банке", response.getMessage());
+    }
+    @Test
     void responseTextWhenCreateAccountIsUnsuccessful() {
         when(backendClient.createAccount(account, telegramUser.userId()))
                 .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));

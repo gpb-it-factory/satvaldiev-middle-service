@@ -40,6 +40,15 @@ class TelegramUserServiceImplTest {
         Assertions.assertEquals("Поздравляем! Вы стали клиентом нашего банка", response.getMessage());
     }
     @Test
+    void responseTextWhenUserIsAlreadyExist() {
+        when(backendClient.createNewUser(telegramUser))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
+
+        Response response = telegramUserService.createNewUser(telegramUser);
+
+        Assertions.assertEquals("Вы уже являетесь клиентом нашего банка", response.getMessage());
+    }
+    @Test
     void responseTextWhenCreateNewUserIsUnsuccessful() {
         when(backendClient.createNewUser(telegramUser))
                 .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));

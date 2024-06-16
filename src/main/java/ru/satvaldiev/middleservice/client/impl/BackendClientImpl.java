@@ -27,7 +27,10 @@ public class BackendClientImpl implements BackendClient {
                 .exchange((request, response) -> {
                     if (response.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT)) {
                         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                    } else {
+                    } else if (response.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
+                        return new ResponseEntity<>(HttpStatus.CONFLICT);
+                    }
+                    else {
                         Error error = response.bodyTo(Error.class);
                         return new ResponseEntity<>(error, response.getStatusCode());
                     }
@@ -43,7 +46,10 @@ public class BackendClientImpl implements BackendClient {
                 .exchange((request, response) -> {
                     if (response.getStatusCode().isSameCodeAs(HttpStatus.NO_CONTENT)) {
                         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                    } else {
+                    } else if (response.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
+                        return new ResponseEntity<>(HttpStatus.CONFLICT);
+                    }
+                    else {
                         Error error = response.bodyTo(Error.class);
                         return new ResponseEntity<>(error, response.getStatusCode());
                     }
