@@ -17,12 +17,19 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 import ru.satvaldiev.middleservice.client.impl.BackendClientImpl;
 import ru.satvaldiev.middleservice.dto.AccountDTO;
+import ru.satvaldiev.middleservice.dto.TransferOutgoingDTO;
+import ru.satvaldiev.middleservice.entity.Account;
 import ru.satvaldiev.middleservice.entity.TelegramUser;
+import ru.satvaldiev.middleservice.entity.Transfer;
 import ru.satvaldiev.middleservice.response.Error;
+import ru.satvaldiev.middleservice.response.Response;
+
+import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
 
 
 @RestClientTest(BackendClientImpl.class)
@@ -107,5 +114,60 @@ class BackendClientImplTest {
         Assertions.assertEquals(expectedResponseEntity.getStatusCode(), responseEntityActual.getStatusCode());
         assert errorActual != null;
         Assertions.assertEquals(errorExpected.getMessage(), errorActual.getMessage());
+    }
+    @Test
+    void responseWithSuccessfulCurrentBalanceGetting() throws JsonProcessingException {
+        List<Account> accountListExpected = List.of(new Account(null, null, "5000.00"));
+        Response expectedResponse = new Response("5000.00");
+
+        this.server
+                .expect(requestTo(baseUrl + "/v2/users/" + telegramUser.userId() + "/accounts"))
+                .andRespond(withSuccess(objectMapper.writeValueAsString(accountListExpected), MediaType.APPLICATION_JSON));
+
+        Response actualResponse = backendClient.getCurrentBalance(telegramUser.userId());
+
+        Assertions.assertEquals(expectedResponse.getMessage(), actualResponse.getMessage());
+    }
+    @Test
+    void responseWithUnsuccessfulCurrentBalanceGetting() {
+        Response expectedResponse = new Response("Произошла непредвиденная ошибка");
+
+        this.server
+                .expect(requestTo(baseUrl + "/v2/users/" + telegramUser.userId() + "/accounts"))
+                .andRespond(withBadRequest());
+
+        Response actualResponse = backendClient.getCurrentBalance(telegramUser.userId());
+
+        Assertions.assertEquals(expectedResponse.getMessage(), actualResponse.getMessage()
+        );
+    }
+
+    @Test
+    void responseWithSuccessfulTransfer() throws JsonProcessingException {
+        TransferOutgoingDTO transferOutgoingDTO = new TransferOutgoingDTO(telegramUser.userName(), "Anatoliy", "500.00");
+        Transfer transferResult = new Transfer(UUID.randomUUID());
+        Response  expectedResponse = new Response(
+                "Перевод средств выполнен успешно. ID транзакции: " + transferResult.transferId());
+
+        this.server
+                .expect(requestTo(baseUrl + "/v2/transfers"))
+                .andRespond(withSuccess(objectMapper.writeValueAsString(transferResult), MediaType.APPLICATION_JSON));
+
+        Response actualResponse = backendClient.transfer(transferOutgoingDTO);
+
+        Assertions.assertEquals(expectedResponse.getMessage(), actualResponse.getMessage());
+    }
+    @Test
+    void responseWithUnsuccessfulTransfer(){
+        TransferOutgoingDTO transferOutgoingDTO = new TransferOutgoingDTO(telegramUser.userName(), "Anatoliy", "500.00");
+        Response expectedResponse = new Response("Произошла непредвиденная ошибка");
+
+        this.server
+                .expect(requestTo(baseUrl + "/v2/transfers"))
+                .andRespond(withBadRequest());
+
+        Response actualResponse = backendClient.transfer(transferOutgoingDTO);
+
+        Assertions.assertEquals(expectedResponse.getMessage(), actualResponse.getMessage());
     }
 }
